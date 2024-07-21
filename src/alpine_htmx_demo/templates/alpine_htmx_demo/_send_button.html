@@ -1,0 +1,11 @@
+<button hx-post="send_message"
+        hx-swap="outerHTML"
+        hx-target="this"
+        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+        class="btn btn-lg">
+    {% if message_sent %}
+        Send again
+    {% else %}
+        Send message
+    {% endif %}
+</button>

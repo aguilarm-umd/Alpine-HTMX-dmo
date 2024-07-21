@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://unpkg.com/htmx.org@latest"></script>
+    <script src="https://unpkg.com/htmx.org@latest/dist/ext/alpine-morph.js"></script>
+    <!-- Alpine Plugins -->
+    <script defer src="https://unpkg.com/@alpinejs/morph@3.x.x/dist/cdn.min.js"></script>
+    <!-- Alpine Core -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+      document.body.addEventListener('htmx:configRequest', (event) => {
+        event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+      })
+    </script>
+    <link rel="stylesheet" href="{% static 'index.css' %}">
+  </head>
+
+  <body>
+    <title> HTMX and Alpine</title>
+    <h1> Alpine Example</h1>
+      <p>Here's a simple counter</p>
+      <div x-data="{ count: 0 }">
+        <button x-on:click="count++">Increment</button>
+        <span x-text="count"></span>
+      </div>
+
+      <p>And here's a modal</p>
+      <div x-data="{ open: false }">
+        <button @click="open = ! open">Toggle</button>
+        <div x-show="open" @click.outside="open = false"> <br>Surprise!</div>
+      </div>
+
+      <p>And a simple search filter, this just uses a static list defined in the html</p>
+      <div
+          x-data="{
+              search: '',
+
+              items: ['foo', 'bar', 'baz'],
+
+              get filteredItems() {
+                  return this.items.filter(
+                      i => i.startsWith(this.search)
+                  )
+              }
+          }"
+      >
+          <input x-model="search" placeholder="Search...">
+
+          <ul>
+              <template x-for="item in filteredItems" :key="item">
+                  <li x-text="item"></li>
+              </template>
+          </ul>
+      </div>
+    <h1> HTMX example to make sure it works</h1>
+    <button hx-get="/test/replace"
+            hx-trigger="click"
+            hx-swap="outerHTML">
+     Click Me!
+    </button>
+
+    <h1> Alpine with HTMX Example</h1>
+    <h2> Messages Demo </h2>
+    {% include "_messages.html" %}
+    <main>
+        {% include "_send_button.html" %}
+    </main>
+
+
+  </body>
+</html>
